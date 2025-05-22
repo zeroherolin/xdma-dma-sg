@@ -31,15 +31,12 @@ sudo ./dma_to_device -d /dev/xdma0_h2c_0 -f ./test2.bin -s 1024 -a 0 -c 1
 
 # 写描述符
 sudo ./dma_pre.sh
-# sudo ./dma_pre.sh | grep "Write 32-bits"
 
 # MM2S（H2C）传输
 sudo ./dma_h2c.sh
-# sudo ./dma_h2c.sh | grep "Write 32-bits"
 
 # S2MM（C2H）传输
 sudo ./dma_c2h.sh
-# sudo ./dma_c2h.sh | grep "Write 32-bits"
 
 # XDMA读取DMA Stream端FIFO数据
 sudo ./dma_from_device -d /dev/xdma0_c2h_0 -f ./test3.bin -s 2048 -a 0 -c 1
