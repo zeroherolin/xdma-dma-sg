@@ -42,3 +42,6 @@ sudo ./dma_c2h.sh
 sudo ./dma_from_device -d /dev/xdma0_c2h_0 -f ./test3.bin -s 2048 -a 0 -c 1
 xxd test3.bin
 ```
+
+## Flow
+<a href="fig/flow.png"><img width=900 src="fig/flow.png"/></a>
