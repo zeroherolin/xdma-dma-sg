@@ -8,22 +8,11 @@ write_descriptor() {
     local next_desc=$2
     local buffer_addr=$3
     local buffer_size=$4
-    local flags=$5
+    local mask=$5
 
-    addr_hex=$(printf "0x%x" $((desc_base + 0x00)))
-    val_hex=$(printf "0x%x" $((next_desc + XDMA_BIAS)))
-    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
-    err=$("$tools/reg_rw" "$dev" $addr_hex w $val_hex)
-
-    addr_hex=$(printf "0x%x" $((desc_base + 0x08)))
-    val_hex=$(printf "0x%x" $buffer_addr)
-    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
-    err=$("$tools/reg_rw" "$dev" $addr_hex w $val_hex)
-
-    addr_hex=$(printf "0x%x" $((desc_base + 0x18)))
-    val_hex=$(printf "0x%x" $((buffer_size | flags)))
-    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
-    err=$("$tools/reg_rw" "$dev" $addr_hex w $val_hex)
+    reg_write $((desc_base + 0x00)) $((next_desc + XDMA_BIAS))
+    reg_write $((desc_base + 0x08)) $buffer_addr
+    reg_write $((desc_base + 0x18)) $((buffer_size | mask))
 }
 
 # 描述符0：H2C传输到Buffer0（MM2S）
@@ -50,29 +39,20 @@ check_descriptor() {
     local buffer_size=$4
     local flags=$5
 
-    addr_hex=$(printf "0x%x" $((desc_base + 0x00)))
-    echo "call \"reg_rw $dev $addr_hex w\""
-    reg_read=$("$tools/reg_rw" "$dev" $addr_hex w | awk '/Read 32-bit value/ {print $NF}')
-    reg_read_dec=$(printf "%d" "$reg_read")
-    if [ $reg_read_dec -ne $((next_desc + XDMA_BIAS)) ]; then
+    read_dec=$(reg_read $((desc_base + 0x00)))
+    if [ $read_dec -ne $((next_desc + XDMA_BIAS)) ]; then
         echo "描述符检查错误：$desc_base + 0x00"
         exit 1
     fi
 
-    addr_hex=$(printf "0x%x" $((desc_base + 0x08)))
-    echo "call \"reg_rw $dev $addr_hex w\""
-    reg_read=$("$tools/reg_rw" "$dev" $addr_hex w | awk '/Read 32-bit value/ {print $NF}')
-    reg_read_dec=$(printf "%d" "$reg_read")
-    if [ $reg_read_dec -ne $buffer_addr ]; then
+    read_dec=$(reg_read $((desc_base + 0x08)))
+    if [ $read_dec -ne $buffer_addr ]; then
         echo "描述符检查错误：$desc_base + 0x08"
         exit 1
     fi
 
-    addr_hex=$(printf "0x%x" $((desc_base + 0x18)))
-    echo "call \"reg_rw $dev $addr_hex w\""
-    reg_read=$("$tools/reg_rw" "$dev" $addr_hex w | awk '/Read 32-bit value/ {print $NF}')
-    reg_read_dec=$(printf "%d" "$reg_read")
-    if [ $reg_read_dec -ne $((buffer_size | flags)) ]; then
+    read_dec=$(reg_read $((desc_base + 0x18)))
+    if [ $read_dec -ne $((buffer_size | flags)) ]; then
         echo "描述符检查错误：$desc_base + 0x18"
         exit 1
     fi
@@ -87,17 +67,11 @@ echo "描述符检查完成"
 
 echo "DMA复位..."
 #--------------------- 复位DMA MM2S ---------------------#
-addr_hex=$(printf "0x%x" $MM2S_DMACR)
-val_hex=$(printf "0x%x" $RESET_MASK)
-echo "call \"reg_rw $dev $addr_hex w $val_hex\""
-err=$("$tools/reg_rw" "$dev" $addr_hex w $val_hex)
+reg_write $MM2S_DMACR $RESET_MASK
 
 # 等待复位完成
 while true; do
-    addr_hex=$(printf "0x%x" $MM2S_DMACR)
-    echo "call \"reg_rw $dev $addr_hex w\""
-    mm2s_dmacr=$("$tools/reg_rw" "$dev" $addr_hex w | awk '/Read 32-bit value/ {print $NF}')
-    mm2s_dmacr_dec=$(printf "%d" "$mm2s_dmacr")
+    mm2s_dmacr_dec=$(reg_read $MM2S_DMACR)
     if [ $((mm2s_dmacr_dec & RESET_MASK)) -eq 0 ]; then
         break
     fi
@@ -105,17 +79,11 @@ while true; do
 done
 
 #--------------------- 复位DMA S2MM---------------------#
-addr_hex=$(printf "0x%x" $S2MM_DMACR)
-val_hex=$(printf "0x%x" $RESET_MASK)
-echo "call \"reg_rw $dev $addr_hex w $val_hex\""
-err=$("$tools/reg_rw" "$dev" $addr_hex w $val_hex)
+reg_write $S2MM_DMACR $RESET_MASK
 
 # 等待复位完成
 while true; do
-    addr_hex=$(printf "0x%x" $S2MM_DMACR)
-    echo "call \"reg_rw $dev $addr_hex w\""
-    s2mm_dmacr=$("$tools/reg_rw" "$dev" $addr_hex w | awk '/Read 32-bit value/ {print $NF}')
-    s2mm_dmacr_dec=$(printf "%d" "$s2mm_dmacr")
+    s2mm_dmacr_dec=$(reg_read $S2MM_DMACR)
     if [ $((s2mm_dmacr_dec & RESET_MASK)) -eq 0 ]; then
         break
     fi

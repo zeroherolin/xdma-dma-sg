@@ -47,6 +47,38 @@ IDLE_MASK=$((1 << 1))    # DMASR.Idle位
 HALTED_MASK=$((1 << 0))  # DMASR.Halted位
 ERROR_MASK=$(( (0x7 << 4) | (0x7 << 8) ))
 
+#--------------------- 寄存器读写函数 ---------------------#
+reg_read() {
+    local addr_dec=$1
+    local addr_hex
+    local reg_read_hex
+    local reg_read_dec
+
+    addr_hex=$(printf "0x%x" "$addr_dec")
+
+    echo "call \"reg_rw $dev $addr_hex w\""
+
+    reg_read_hex=$("$tools/reg_rw" "$dev" "$addr_hex" w | awk '/Read 32-bit value/ {print $NF}')
+    reg_read_dec=$(printf "%d" "$reg_read_hex")
+
+    echo "$reg_read_dec"
+}
+
+reg_write() {
+    local addr_dec=$1
+    local val_dec=$2
+    local addr_hex
+    local val_hex
+    local err
+
+    addr_hex=$(printf "0x%x" "$addr_dec")
+    val_hex=$(printf "0x%x" "$val_dec")
+
+    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
+
+    err=$("$tools/reg_rw" "$dev" "$addr_hex" w "$val_hex")
+}
+
 #--------------------- 错误处理函数 ---------------------#
 check_dma_error() {
     local dmasr=$1
