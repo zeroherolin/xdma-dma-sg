@@ -4,7 +4,7 @@ This repository provides a comprehensive guide to working with the XDMA driver f
 
 ## Prerequisites
 
-  * Ensure you have the necessary hardware and software environment set up, including the DMA IP drivers.
+  * Ensure you have the necessary hardware and software environment set up, including the DMA IP drivers. [https://github.com/Xilinx/dma_ip_drivers](https://github.com/Xilinx/dma_ip_drivers)
   * Make sure you have the required permissions to execute commands and access devices.
 
 ## Instructions
