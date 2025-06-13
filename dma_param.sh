@@ -56,7 +56,7 @@ reg_read() {
 
     addr_hex=$(printf "0x%x" "$addr_dec")
 
-    echo "call \"reg_rw $dev $addr_hex w\""
+    echo "call \"reg_rw $dev $addr_hex w\"" >&2
 
     reg_read_hex=$("$tools/reg_rw" "$dev" "$addr_hex" w | awk '/Read 32-bit value/ {print $NF}')
     reg_read_dec=$(printf "%d" "$reg_read_hex")
@@ -74,7 +74,7 @@ reg_write() {
     addr_hex=$(printf "0x%x" "$addr_dec")
     val_hex=$(printf "0x%x" "$val_dec")
 
-    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
+    echo "call \"reg_rw $dev $addr_hex w $val_hex\"" >&2
 
     err=$("$tools/reg_rw" "$dev" "$addr_hex" w "$val_hex")
 }
