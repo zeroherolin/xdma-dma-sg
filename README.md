@@ -22,7 +22,8 @@ make
 ``` bash
 # cd external/dma_ip_drivers/XDMA/linux-kernel/tools
 rm -f *.bin
-python -c 'open("test0.bin", "wb").write(bytes([i % 256 for i in range(4096)]))'
+# dd if=/dev/zero of=test0.bin bs=4096 count=1 # 生成全0的bin文件
+python -c 'open("test0.bin", "wb").write(bytes([i % 256 for i in range(4096)]))' # 递增数
 cd ../../../../..
 ```
 
