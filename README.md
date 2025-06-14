@@ -20,9 +20,9 @@ make
 
 - 生成测试数据
 ``` bash
-# pwd: external/dma_ip_drivers/XDMA/linux-kernel/tools
+# cd external/dma_ip_drivers/XDMA/linux-kernel/tools
 rm -f *.bin
-python -c 'open("test0.bin", "wb").write(bytes([i % 256 for i in range(2048)]))'
+python -c 'open("test0.bin", "wb").write(bytes([i % 256 for i in range(4096)]))'
 cd ../../../../..
 ```
 
@@ -40,7 +40,7 @@ sudo chmod +x dma_c2h.sh
 ``` bash
 # XDMA写DMA数据（to MM）
 sudo external/dma_ip_drivers/XDMA/linux-kernel/tools/dma_to_device -d /dev/xdma0_h2c_0 \
-    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test0.bin -s 2048 -a 0 -c 1
+    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test0.bin -s 4096 -a 0 -c 1
 
 # DMA写描述符
 sudo ./dma_pre.sh
@@ -53,7 +53,7 @@ sudo ./dma_c2h.sh
 
 # XDMA读取DMA数据（from MM）
 sudo external/dma_ip_drivers/XDMA/linux-kernel/tools/dma_from_device -d /dev/xdma0_c2h_0 \
-    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test1.bin -s 2048 -a 0 -c 1
+    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test1.bin -s 4096 -a 0 -c 1
 
 # 核对数据
 xxd external/dma_ip_drivers/XDMA/linux-kernel/tools/test1.bin
