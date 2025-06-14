@@ -9,29 +9,38 @@ This repository provides a comprehensive guide to working with the XDMA driver f
 
 ## Instructions
 
+- 编译XDMA驱动和tools
 ``` bash
-# 编译XDMA驱动并（临时）安装
 cd external/dma_ip_drivers/XDMA/linux-kernel/xdma
 make
-sudo insmod xdma.ko
+sudo insmod xdma.ko # 临时安装
 cd ../tools
 make
+```
 
-# XDMA写入数据到DMA Stream端FIFO
+- 生成测试数据
+``` bash
+# pwd: external/dma_ip_drivers/XDMA/linux-kernel/tools
 rm -f *.bin
-dd if=/dev/zero of=test0.bin bs=1024 count=1
-xxd -p test0.bin | sed 's/00/01/g' | xxd -r -p > test2.bin
-sudo ./dma_to_device -d /dev/xdma0_h2c_0 -f ./test2.bin -s 1024 -a 0 -c 1
-sudo ./dma_to_device -d /dev/xdma0_h2c_0 -f ./test2.bin -s 1024 -a 0 -c 1
+python -c 'open("test0.bin", "wb").write(bytes([i % 256 for i in range(2048)]))'
 cd ../../../../..
+```
 
-# 添加可执行权限
+- 添加可执行权限
+``` bash
 sudo chmod +x dma_pre.sh
 sudo chmod +x dma_h2c.sh
 sudo chmod +x dma_c2h.sh
 
 # 如有需要，改为Unix风格（去除行尾'\r'）
-sed -i 's/\r//' dma_param.sh && sed -i 's/\r//' dma_pre.sh && sed -i 's/\r//' dma_h2c.sh && sed -i 's/\r//' dma_c2h.sh
+# sed -i 's/\r//' dma_param.sh && sed -i 's/\r//' dma_pre.sh && sed -i 's/\r//' dma_h2c.sh && sed -i 's/\r//' dma_c2h.sh
+```
+
+- 执行测试
+``` bash
+# XDMA写DMA数据（to MM）
+sudo external/dma_ip_drivers/XDMA/linux-kernel/tools/dma_to_device -d /dev/xdma0_h2c_0 \
+    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test0.bin -s 2048 -a 0 -c 1
 
 # DMA写描述符
 sudo ./dma_pre.sh
@@ -42,10 +51,12 @@ sudo ./dma_h2c.sh
 # DMA MM2S（C2H）传输
 sudo ./dma_c2h.sh
 
-# XDMA读取DMA Stream端FIFO数据
-cd external/dma_ip_drivers/XDMA/linux-kernel/tools
-sudo ./dma_from_device -d /dev/xdma0_c2h_0 -f ./test3.bin -s 2048 -a 0 -c 1
-xxd test3.bin
+# XDMA读取DMA数据（from MM）
+sudo external/dma_ip_drivers/XDMA/linux-kernel/tools/dma_from_device -d /dev/xdma0_c2h_0 \
+    -f external/dma_ip_drivers/XDMA/linux-kernel/tools/test1.bin -s 2048 -a 0 -c 1
+
+# 核对数据
+xxd external/dma_ip_drivers/XDMA/linux-kernel/tools/test1.bin
 ```
 
 ## Flow
