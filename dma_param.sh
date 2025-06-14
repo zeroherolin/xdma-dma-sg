@@ -74,7 +74,7 @@ reg_write() {
     addr_hex=$(printf "0x%x" "$addr_dec")
     val_hex=$(printf "0x%x" "$val_dec")
 
-    echo "call \"reg_rw $dev $addr_hex w $val_hex\"" >&2
+    echo "call \"reg_rw $dev $addr_hex w $val_hex\""
 
     err=$("$tools/reg_rw" "$dev" "$addr_hex" w "$val_hex")
 }
