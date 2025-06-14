@@ -14,7 +14,9 @@ This repository provides a comprehensive guide to working with the XDMA driver f
 cd external/dma_ip_drivers/XDMA/linux-kernel/xdma
 make
 sudo insmod xdma.ko
-cd ../../../../
+cd ../tools
+make
+cd ../../../..
 
 # 添加可执行权限
 sudo chmod +x dma_pre.sh
