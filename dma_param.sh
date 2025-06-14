@@ -2,7 +2,7 @@
 dev="/dev/xdma0_user"
 
 # 可执行文件路径
-tools="/home/kylin/桌面/dma_ip_drivers/XDMA/linux-kernel/tools"
+tools="external/dma_ip_drivers/XDMA/linux-kernel/tools"
 
 #--------------------- 参数定义 ---------------------#
 # DMA IP寄存器基地址

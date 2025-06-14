@@ -10,16 +10,18 @@ This repository provides a comprehensive guide to working with the XDMA driver f
 ## Instructions
 
 ``` bash
-cd dma_ip_drivers/XDMA/linux-kernel/xdma
+# 编译xdma驱动并（临时）安装
+cd external/dma_ip_drivers/XDMA/linux-kernel/xdma
+make
 sudo insmod xdma.ko
-cd ../tools
+cd ../../../../
 
 # 添加可执行权限
 sudo chmod +x dma_pre.sh
 sudo chmod +x dma_h2c.sh
 sudo chmod +x dma_c2h.sh
 
-# 改为Unix风格（去除Windows风格的行尾'\r'）
+# 如有需要，改为Unix风格（去除行尾'\r'）
 sed -i 's/\r//' dma_param.sh && sed -i 's/\r//' dma_pre.sh && sed -i 's/\r//' dma_h2c.sh && sed -i 's/\r//' dma_c2h.sh
 
 # XDMA写入数据到DMA Stream端FIFO
