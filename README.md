@@ -36,10 +36,10 @@ sed -i 's/\r//' dma_param.sh && sed -i 's/\r//' dma_pre.sh && sed -i 's/\r//' dm
 # DMA写描述符
 sudo ./dma_pre.sh
 
-# DMA MM2S（H2C）传输
+# DMA S2MM（H2C）传输
 sudo ./dma_h2c.sh
 
-# DMA S2MM（C2H）传输
+# DMA MM2S（C2H）传输
 sudo ./dma_c2h.sh
 
 # XDMA读取DMA Stream端FIFO数据
