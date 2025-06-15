@@ -1,10 +1,12 @@
 # Getting Started
 
-This repository provides a comprehensive guide to working with the XDMA driver for DMA operations between host and device.
+This repository provides a comprehensive guide to working with the XDMA driver for DMA-SG operations.
+
+The shell scripts are based on connecting the DMA-s port to PCIe XDMA. This may seem redundant, but it is just for testing. You can connect the s-port to any stream device without modifying the shell scripts.
 
 ## Prerequisites
 
-  * Ensure you have the necessary hardware and software environment set up, including the DMA IP drivers. [https://github.com/Xilinx/dma_ip_drivers](https://github.com/Xilinx/dma_ip_drivers)
+  * Make sure you have the necessary hardware and software environment set up, including the DMA IP drivers [[https://github.com/Xilinx/dma_ip_drivers](https://github.com/Xilinx/dma_ip_drivers)].
   * Make sure you have the required permissions to execute commands and access devices.
 
 ## Instructions
