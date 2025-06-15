@@ -1,15 +1,17 @@
-# Getting Started
+# Configuring FPGA DMA-SG via PCIe XDMA
 
 This repository provides a comprehensive guide to working with the XDMA driver for DMA-SG operations.
 
-The flow is based on connecting the DMA-s port to PCIe XDMA. This may seem redundant, but it is just for testing. You can connect the s-port to any stream device without modifying the shell scripts.
+The flow is based on connecting the DMA-s port to PCIe XDMA. This may seem redundant, but it is just for testing. You can connect the s-port to any stream device without reconstructing the shell scripts.
 
-## Prerequisites
+## Getting Started
+
+### Prerequisites
 
   * Make sure you have the necessary hardware and software environment set up, including the DMA IP drivers [[https://github.com/Xilinx/dma_ip_drivers](https://github.com/Xilinx/dma_ip_drivers)].
   * Make sure you have the required permissions to execute commands and access devices.
 
-## Instructions
+### Instructions
 
 - 编译XDMA驱动和tools
 ``` bash
