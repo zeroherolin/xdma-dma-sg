@@ -1,3 +1,5 @@
+. ./dma_param.sh
+
 echo "DMA复位..."
 #--------------------- 复位DMA MM2S ---------------------#
 reg_write $MM2S_DMACR $RESET_MASK
