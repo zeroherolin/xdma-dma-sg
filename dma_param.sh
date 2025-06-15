@@ -18,18 +18,18 @@ DMA_DESC3=$((BRAM_BASE + 192))
 
 # DDR Buffer地址
 DDR_BASE=$((0x80000000))
-BUFFER_SIZE=$((1024))
+BUFFER_SIZE=$((2048))
 BUFFER_ADDR0=$((DDR_BASE + 0))
 BUFFER_ADDR1=$((DDR_BASE + BUFFER_SIZE))
 
 #--------------------- DMA寄存器控制 ---------------------#
-# MM2S通道寄存器偏移（H2C）
+# MM2S通道寄存器偏移（C2H）
 MM2S_DMACR=$((DMA_BASE + 0x00))
 MM2S_DMASR=$((DMA_BASE + 0x04))
 MM2S_CURDESC=$((DMA_BASE + 0x08))
 MM2S_TAILDESC=$((DMA_BASE + 0x10))
 
-# S2MM通道寄存器偏移（C2H）
+# S2MM通道寄存器偏移（H2C）
 S2MM_DMACR=$((DMA_BASE + 0x30))
 S2MM_DMASR=$((DMA_BASE + 0x34))
 S2MM_CURDESC=$((DMA_BASE + 0x38))
@@ -56,11 +56,12 @@ reg_read() {
 
     addr_hex=$(printf "0x%x" "$addr_dec")
 
-    echo "call \"reg_rw $dev $addr_hex w\"" >&2
+    echo -n "call \"reg_rw $dev $addr_hex w\" " >&2
 
     reg_read_hex=$("$tools/reg_rw" "$dev" "$addr_hex" w | awk '/Read 32-bit value/ {print $NF}')
     reg_read_dec=$(printf "%d" "$reg_read_hex")
 
+    echo "- return $reg_read_hex" >&2
     echo "$reg_read_dec"
 }
 
@@ -83,25 +84,25 @@ reg_write() {
 check_dma_error() {
     local dmasr=$1
     if [ $((dmasr & ERROR_MASK)) -ne 0 ]; then
-        echo -e "\033[31m[DMA错误] 状态寄存器值：0x$(printf '%08x' $dmasr)\033[0m"
+        echo "\033[31m[错误] 状态寄存器值：0x$(printf '%08x' $dmasr)\033[0m"
         # 解析具体错误位
         if [ $((dmasr & (1 << 4))) -ne 0 ]; then
-            echo " - DMAIntErr: 内部错误"
+            echo "- DMAIntErr: 内部错误"
         fi
         if [ $((dmasr & (1 << 5))) -ne 0 ]; then
-            echo " - DMASlvErr: AXI从设备错误"
+            echo "- DMASlvErr: AXI从设备错误"
         fi
         if [ $((dmasr & (1 << 6))) -ne 0 ]; then
-            echo " - DMADecErr: 地址解码错误"
+            echo "- DMADecErr: 地址解码错误"
         fi
         if [ $((dmasr & (1 << 8))) -ne 0 ]; then
-            echo " - SGIntErr: 描述符完整性错误"
+            echo "- SGIntErr: 描述符完整性错误"
         fi
         if [ $((dmasr & (1 << 9))) -ne 0 ]; then
-            echo " - SGSlvErr: SG从设备错误"
+            echo "- SGSlvErr: SG从设备错误"
         fi
         if [ $((dmasr & (1 << 10))) -ne 0 ]; then
-            echo " - SGDecErr: SG地址解码错误"
+            echo "- SGDecErr: SG地址解码错误"
         fi
         exit 1
     fi

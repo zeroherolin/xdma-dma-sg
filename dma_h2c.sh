@@ -21,7 +21,7 @@ while true; do
     s2mm_dmasr_dec=$(reg_read $S2MM_DMASR)
     check_dma_error $s2mm_dmasr_dec
     if [ $((s2mm_dmasr_dec & HALTED_MASK)) -ne 0 ]; then
-        echo -e "\033[31m[错误] S2MM通道已停止\033[0m"
+        echo "\033[31m[错误] S2MM通道已停止\033[0m"
         exit 1
     fi
     if [ $((s2mm_dmasr_dec & IDLE_MASK)) -ne 0 ]; then
