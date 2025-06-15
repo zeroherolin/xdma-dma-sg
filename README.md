@@ -2,7 +2,7 @@
 
 This repository provides a comprehensive guide to working with the XDMA driver for DMA-SG operations.
 
-The shell scripts are based on connecting the DMA-s port to PCIe XDMA. This may seem redundant, but it is just for testing. You can connect the s-port to any stream device without modifying the shell scripts.
+The flow is based on connecting the DMA-s port to PCIe XDMA. This may seem redundant, but it is just for testing. You can connect the s-port to any stream device without modifying the shell scripts.
 
 ## Prerequisites
 
